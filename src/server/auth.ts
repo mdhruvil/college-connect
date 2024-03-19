@@ -12,6 +12,7 @@ import { db } from "@/server/db";
 import { createTable, users } from "@/server/db/schema";
 import { parseDomainFromEmail } from "@/utils/helpers";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -25,7 +26,8 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-    } & DefaultSession["user"];
+    } & DefaultSession["user"] &
+      typeof users.$inferSelect;
   }
 
   // interface User {
@@ -41,13 +43,15 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: async ({ session, user, token }) => {
+      console.log("session-callback", { session, user, token });
+      const userDetails = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.id, user.id),
+      });
+      if (!userDetails) return session;
+      session.user = userDetails;
+      return session;
+    },
   },
   adapter: DrizzleAdapter(db, createTable) as Adapter,
   providers: [
@@ -88,3 +92,11 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
+
+export const checkAuth = async () => {
+  const session = await getServerAuthSession();
+  if (!session) {
+    return redirect("/api/auth/signin");
+  }
+  return session;
+};
