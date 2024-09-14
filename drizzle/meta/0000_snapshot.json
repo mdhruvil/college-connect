@@ -97,12 +97,8 @@
           "name": "college-connect_account_user_id_college-connect_user_id_fk",
           "tableFrom": "college-connect_account",
           "tableTo": "college-connect_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -110,10 +106,7 @@
       "compositePrimaryKeys": {
         "college-connect_account_provider_provider_account_id_pk": {
           "name": "college-connect_account_provider_provider_account_id_pk",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ]
+          "columns": ["provider", "provider_account_id"]
         }
       },
       "uniqueConstraints": {}
@@ -191,12 +184,8 @@
           "name": "college-connect_post_created_by_college-connect_user_id_fk",
           "tableFrom": "college-connect_post",
           "tableTo": "college-connect_user",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -249,12 +238,8 @@
           "name": "college-connect_session_user_id_college-connect_user_id_fk",
           "tableFrom": "college-connect_session",
           "tableTo": "college-connect_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -331,10 +316,7 @@
       "compositePrimaryKeys": {
         "college-connect_verification_token_identifier_token_pk": {
           "name": "college-connect_verification_token_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
+          "columns": ["identifier", "token"]
         }
       },
       "uniqueConstraints": {}
