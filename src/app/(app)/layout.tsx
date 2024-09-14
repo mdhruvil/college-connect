@@ -5,7 +5,7 @@ export default function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <div className="h-[92vh] overflow-y-auto">{children}</div>
+      <div className="mb-20 overflow-y-auto">{children}</div>
       <BottomBar />
     </>
   );
