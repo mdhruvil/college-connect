@@ -31,13 +31,13 @@ export const posts = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
+      () => new Date(),
     ),
   },
   (example) => ({
     createdByIdIdx: index("created_by_idx").on(example.createdById),
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );
 
 export const users = createTable("user", {
@@ -52,11 +52,131 @@ export const users = createTable("user", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  enrollmentNo: varchar("enrollment_no", { length: 12 })
+    .notNull()
+    .default("Not Added"),
+  degree: varchar("degree", { length: 255 }).notNull().default("Not Added"),
+  yearOfStudy: varchar("year_of_study", { length: 255 })
+    .notNull()
+    .default("Not Added"),
+  department: varchar("department", { length: 255 })
+    .notNull()
+    .default("Not Added"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  clubToMembers: many(clubToMembers),
+  eventRegistrations: many(eventRegistrations),
 }));
+
+export const clubs = createTable("club", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description", { length: 255 }),
+  image: varchar("image", { length: 255 }),
+  createdById: varchar("created_by", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const clubsRelations = relations(clubs, ({ one, many }) => ({
+  creator: one(users, { fields: [clubs.createdById], references: [users.id] }),
+  clubToMembers: many(clubToMembers),
+}));
+
+export const clubToMembers = createTable(
+  "club_to_member",
+  {
+    clubId: varchar("club_id", { length: 255 })
+      .notNull()
+      .references(() => clubs.id),
+    memberId: varchar("member_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    position: varchar("position", { length: 255 }),
+    joinedAt: timestamp("joined_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (self) => ({
+    pk: primaryKey({ columns: [self.clubId, self.memberId] }),
+  }),
+);
+
+export const clubToMembersRelations = relations(clubToMembers, ({ one }) => ({
+  club: one(clubs, { fields: [clubToMembers.clubId], references: [clubs.id] }),
+  member: one(users, {
+    fields: [clubToMembers.memberId],
+    references: [users.id],
+  }),
+}));
+
+export const events = createTable("event", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description", { length: 255 }),
+  image: varchar("image", { length: 255 }),
+  createdById: varchar("created_by", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  clubId: varchar("club_id", { length: 255 })
+    .notNull()
+    .references(() => clubs.id),
+  eventDate: timestamp("event_date", { withTimezone: true }).notNull(),
+  location: varchar("location", { length: 255 }),
+  type: varchar("type", { length: 255, enum: ["ONLINE", "OFFLINE"] }),
+});
+
+export const eventsRelations = relations(events, ({ one, many }) => ({
+  creator: one(users, { fields: [events.createdById], references: [users.id] }),
+  club: one(clubs, { fields: [events.clubId], references: [clubs.id] }),
+  eventRegistrations: many(eventRegistrations),
+}));
+
+export const eventRegistrations = createTable(
+  "event_registration",
+  {
+    eventId: varchar("event_id", { length: 255 })
+      .notNull()
+      .references(() => events.id),
+    memberId: varchar("member_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    registeredAt: timestamp("registered_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    status: varchar("status", { length: 255 }).notNull(),
+  },
+  (self) => ({
+    pk: primaryKey({ columns: [self.eventId, self.memberId] }),
+  }),
+);
+export const eventRegistrationsRelations = relations(
+  eventRegistrations,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventRegistrations.eventId],
+      references: [events.id],
+    }),
+    member: one(users, {
+      fields: [eventRegistrations.memberId],
+      references: [users.id],
+    }),
+  }),
+);
 
 export const accounts = createTable(
   "account",
@@ -84,7 +204,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_user_id_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -107,7 +227,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_user_id_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -126,5 +246,5 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
