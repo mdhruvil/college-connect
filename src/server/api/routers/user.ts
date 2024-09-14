@@ -20,4 +20,38 @@ export const userRouter = createTRPCRouter({
         .returning();
       return updatedUser;
     }),
+  profile: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const clubPromise = ctx.db.query.clubToMembers.findMany({
+      with: {
+        club: true,
+      },
+      where(clubs, { eq }) {
+        return eq(clubs.memberId, userId);
+      },
+    });
+    const eventPromise = await ctx.db.query.eventRegistrations.findMany({
+      with: {
+        event: true,
+      },
+      where(eventRegistrations, { eq }) {
+        return eq(eventRegistrations.memberId, userId);
+      },
+    });
+
+    const [clubs, events] = await Promise.all([clubPromise, eventPromise]);
+    return {
+      user: ctx.session.user,
+      clubs: clubs.map((club) => ({
+        ...club.club,
+        postition: club.position,
+      })),
+      events: events.map((event) => ({
+        ...event.event,
+        registeredAt: event.registeredAt,
+        status: event.status,
+      })),
+    };
+  }),
 });
