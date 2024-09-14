@@ -89,7 +89,7 @@ export default function Profile() {
                       alt={club.name}
                       width={80}
                       height={80}
-                      className="rounded-md object-cover"
+                      className="aspect-square rounded-md object-contain"
                     />
                   </div>
                   <div className="flex-grow">

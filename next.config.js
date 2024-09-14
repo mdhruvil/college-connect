@@ -5,6 +5,16 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    loader: "custom",
+    loaderFile: "./wsrc-loader.js",
+    remotePatterns: [
+      {
+        hostname: "utfs.io",
+      },
+    ],
+  },
+};
 
 export default config;
