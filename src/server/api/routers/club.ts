@@ -104,4 +104,51 @@ export const clubRouter = createTRPCRouter({
           ),
         );
     }),
+
+  getClubById: protectedProcedure
+    .input(z.object({ clubId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const data = await ctx.db.query.clubs.findFirst({
+        where: (clubs, { eq }) => eq(clubs.id, input.clubId),
+        with: {
+          clubToMembers: {
+            with: {
+              member: {
+                columns: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          events: true,
+        },
+      });
+
+      if (!data) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Club not found",
+        });
+      }
+
+      const club = {
+        ...data,
+        memberCount: data.clubToMembers.length,
+        eventCount: data.events.length,
+        isMember: data.clubToMembers.some(
+          (clubToMember) => clubToMember.memberId === ctx.session.user.id,
+        ),
+        members: data.clubToMembers.map((clubToMember) => ({
+          ...clubToMember.member,
+          position: clubToMember.position,
+          joinedAt: clubToMember.joinedAt,
+        })),
+        clubToMembers: [],
+        userId: ctx.session.user.id,
+      };
+
+      return club;
+    }),
 });

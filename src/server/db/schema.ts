@@ -89,6 +89,7 @@ export const clubs = createTable("club", {
 export const clubsRelations = relations(clubs, ({ one, many }) => ({
   creator: one(users, { fields: [clubs.createdById], references: [users.id] }),
   clubToMembers: many(clubToMembers),
+  events: many(events),
 }));
 
 export const clubToMembers = createTable(
