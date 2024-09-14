@@ -1,9 +1,10 @@
-import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { z } from "zod";
-import { clubs, clubToMembers } from "~/server/db/schema";
-import { ClubPosition } from "~/lib/constants";
 import { TRPCError } from "@trpc/server";
+import { and, eq, sql } from "drizzle-orm";
+import { z } from "zod";
+import { ClubPosition } from "~/lib/constants";
+import { clubs, clubToMembers, events } from "~/server/db/schema";
 import { createClubSchema } from "~/validators/club";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const clubRouter = createTRPCRouter({
   create: protectedProcedure
@@ -37,5 +38,70 @@ export const clubRouter = createTRPCRouter({
           position: ClubPosition.CREATOR,
         });
       });
+    }),
+  getClubs: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+    const data = await ctx.db
+      .select({
+        id: clubs.id,
+        name: clubs.name,
+        description: clubs.description,
+        image: clubs.image,
+        createdById: clubs.createdById,
+        createdAt: clubs.createdAt,
+        memberCount: sql<number>`count(${clubToMembers.memberId})`.as(
+          "memberCount",
+        ),
+        eventCount: sql<number>`count(${events.id})`.as("eventCount"),
+        isMember: sql<boolean>`
+        EXISTS (
+          SELECT 1 FROM ${clubToMembers} 
+          WHERE ${clubToMembers.clubId} = ${clubs.id} AND ${clubToMembers.memberId} = ${userId}
+        )
+      `.as("isMember"),
+      })
+      .from(clubs)
+      .leftJoin(clubToMembers, eq(clubs.id, clubToMembers.clubId))
+      .leftJoin(events, eq(clubs.id, events.clubId))
+      .groupBy(clubs.id);
+    return data;
+  }),
+  joinClub: protectedProcedure
+    .input(z.object({ clubId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+      await ctx.db.insert(clubToMembers).values({
+        clubId: input.clubId,
+        memberId: userId,
+        position: ClubPosition.MEMBER,
+      });
+    }),
+  leaveClub: protectedProcedure
+    .input(z.object({ clubId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      const club = await ctx.db.query.clubs.findFirst({
+        where: (clubs, { eq }) => eq(clubs.id, input.clubId),
+        columns: {
+          createdById: true,
+        },
+      });
+
+      if (club?.createdById === userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can't leave the club you created",
+        });
+      }
+
+      await ctx.db
+        .delete(clubToMembers)
+        .where(
+          and(
+            eq(clubToMembers.clubId, input.clubId),
+            eq(clubToMembers.memberId, userId),
+          ),
+        );
     }),
 });

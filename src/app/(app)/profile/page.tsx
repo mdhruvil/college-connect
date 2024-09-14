@@ -2,8 +2,9 @@
 
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { getYearOfStudy } from "~/lib/utils";
@@ -20,7 +21,7 @@ export default function Profile() {
     <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
       {/* Profile */}
       <Card className="w-full">
-        <CardHeader className="text-center">
+        <CardHeader className="space-y-0 text-center">
           <Avatar className="mx-auto mb-4 h-24 w-24">
             <AvatarImage
               src={data.user.image ?? ""}
@@ -34,34 +35,34 @@ export default function Profile() {
             </AvatarFallback>
           </Avatar>
           <CardTitle className="text-2xl font-bold">{data.user.name}</CardTitle>
-          <p className="text-muted-foreground">{data.user.email}</p>
+          <p className="text-sm text-muted-foreground">{data.user.email}</p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Enrollment No.
               </p>
-              <p className="text-lg font-semibold">{data.user.enrollmentNo}</p>
+              <p className="font-semibold">{data.user.enrollmentNo}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 Year of Study
               </p>
-              <p className="text-lg font-semibold">
+              <p className="font-semibold">
                 {getYearOfStudy(data.user.yearOfStudy)}
               </p>
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Degree</p>
-            <p className="text-lg font-semibold">{data.user.degree}</p>
+            <p className="text-xs font-medium text-muted-foreground">Degree</p>
+            <p className="font-semibold">{data.user.degree}</p>
           </div>
           <div>
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground">
               Department
             </p>
-            <p className="text-lg font-semibold">{data.user.department}</p>
+            <p className="font-semibold">{data.user.department}</p>
           </div>
         </CardContent>
       </Card>
@@ -70,10 +71,13 @@ export default function Profile() {
       <Card className="mb-6 w-full">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-bold">Clubs</CardTitle>
-          <Button variant="outline" size="sm">
+          <Link
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+            href="/clubs/new"
+          >
             <PlusIcon className="mr-2 h-4 w-4" />
             Create Club
-          </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           {data.clubs.length ? (

@@ -5,7 +5,10 @@ export const createClubSchema = z.object({
     .string()
     .min(1, "Club name is required")
     .max(255, "Club name must be 255 characters or less"),
-  description: z.string().min(1, "Description is required"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(255, "Max 255 Characters allowed"),
   image: z
     .array(
       z
