@@ -83,26 +83,32 @@ export default function Profile() {
           {data.clubs.length ? (
             <ul className="space-y-4">
               {data.clubs.map((club, index) => (
-                <li
+                <Link
                   key={index}
+                  href={`/clubs/${club.id}`}
                   className="flex items-start space-x-4 border-b pb-4 last:border-b-0 last:pb-0"
                 >
-                  <div className="flex-shrink-0">
-                    <Image
-                      src={club.image ?? ""}
-                      alt={club.name}
-                      width={80}
-                      height={80}
-                      className="aspect-square rounded-md object-contain"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{club.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {club.postition}
-                    </p>
-                  </div>
-                </li>
+                  <li
+                    key={index}
+                    className="flex items-start space-x-4 border-b pb-4 last:border-b-0 last:pb-0"
+                  >
+                    <div className="flex-shrink-0">
+                      <Image
+                        src={club.image ?? ""}
+                        alt={club.name}
+                        width={80}
+                        height={80}
+                        className="aspect-square rounded-md object-contain"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-semibold">{club.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {club.postition}
+                      </p>
+                    </div>
+                  </li>
+                </Link>
               ))}
             </ul>
           ) : (
