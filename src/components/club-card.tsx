@@ -20,8 +20,12 @@ export function ClubCard({
   id: clubId,
   refetchClubs,
 }: ClubCardProps) {
-  const joinClub = api.club.joinClub.useMutation();
-  const leaveClub = api.club.leaveClub.useMutation();
+  const joinClub = api.club.joinClub.useMutation({
+    onSettled: async () => await refetchClubs(),
+  });
+  const leaveClub = api.club.leaveClub.useMutation({
+    onSettled: async () => await refetchClubs(),
+  });
   return (
     <Card className="p-4">
       <Link href={`/clubs/${clubId}`}>
@@ -56,9 +60,6 @@ export function ClubCard({
               leaveClub.mutate(
                 { clubId },
                 {
-                  onSuccess: () => {
-                    refetchClubs().catch(toast.error);
-                  },
                   onError(error) {
                     toast.error(error.message, { richColors: true });
                   },
@@ -76,11 +77,8 @@ export function ClubCard({
               joinClub.mutate(
                 { clubId },
                 {
-                  onSuccess: () => {
-                    refetchClubs().catch(toast.error);
-                  },
                   onError(error) {
-                    toast.error(error.message);
+                    toast.error(error.message, { richColors: true });
                   },
                 },
               );
