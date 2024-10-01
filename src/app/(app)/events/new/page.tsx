@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type * as z from "zod";
-import { DateTimePicker } from "~/components/date-picker";
 import { FileUploader } from "~/components/file-uploader";
 import RadioButtonGroup from "~/components/radio-button-groups";
 import { Button } from "~/components/ui/button";
@@ -188,10 +187,11 @@ export default function EventCreationForm() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Event Date</FormLabel>
-                    <DateTimePicker
-                      granularity="minute"
-                      value={field.value}
-                      onChange={field.onChange}
+                    <Input
+                      type="datetime-local"
+                      // @ts-expect-error valueAsDate is allowed
+                      valueAsDate={field.value}
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
                     />
 
                     <FormMessage />
