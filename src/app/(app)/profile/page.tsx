@@ -9,12 +9,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { getYearOfStudy } from "~/lib/utils";
 import { api } from "~/trpc/react";
+import { signOut } from "next-auth/react";
+import { toast } from "sonner";
+import { Alert, AlertTitle } from "~/components/ui/alert";
 
 export default function Profile() {
-  const { data, isLoading } = api.user.profile.useQuery();
+  const { data, isLoading, error } = api.user.profile.useQuery();
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return <ProfileSkeleton />;
+  }
+
+  if (error || !data) {
+    toast.error(error?.message);
+    return (
+      <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          {error?.message ?? "Failed to load profile"}
+        </Alert>
+      </div>
+    );
   }
 
   return (
@@ -118,6 +133,67 @@ export default function Profile() {
           )}
         </CardContent>
       </Card>
+
+      {/* Events */}
+      <Card className="mb-6 w-full">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl font-bold">Events</CardTitle>
+          <Link
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+            href="/events/new"
+          >
+            <PlusIcon className="mr-2 h-4 w-4" />
+            Create Event
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {data.events.length ? (
+            <ul className="space-y-4">
+              {data.events.map((event, index) => (
+                <Link
+                  key={index}
+                  href={`/events/${event.id}`}
+                  className="flex items-start space-x-4 border-b pb-4 last:border-b-0 last:pb-0"
+                >
+                  <li
+                    key={index}
+                    className="flex items-start space-x-4 border-b pb-4 last:border-b-0 last:pb-0"
+                  >
+                    <div className="flex-shrink-0">
+                      <Image
+                        src={event.image ?? ""}
+                        alt={event.name}
+                        width={80}
+                        height={80}
+                        className="aspect-square rounded-md object-contain"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-semibold">{event.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {event.status}
+                      </p>
+                    </div>
+                  </li>
+                </Link>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">
+              No events attended yet.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+      <div className="flex justify-end">
+        <Button
+          variant="destructive"
+          className="mx-auto"
+          onClick={() => signOut()}
+        >
+          Logout
+        </Button>
+      </div>
     </div>
   );
 }

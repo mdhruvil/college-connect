@@ -61,8 +61,8 @@ export const clubRouter = createTRPCRouter({
       `.as("isMember"),
       })
       .from(clubs)
-      .leftJoin(clubToMembers, eq(clubs.id, clubToMembers.clubId))
       .leftJoin(events, eq(clubs.id, events.clubId))
+      .leftJoin(clubToMembers, eq(clubs.id, clubToMembers.clubId))
       .groupBy(clubs.id);
     return data;
   }),
@@ -151,4 +151,12 @@ export const clubRouter = createTRPCRouter({
 
       return club;
     }),
+
+  getClubsOwnedByUser: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+    const clubs = await ctx.db.query.clubs.findMany({
+      where: (clubs, { eq }) => eq(clubs.createdById, userId),
+    });
+    return clubs;
+  }),
 });
