@@ -8,6 +8,7 @@ import { FileUploader } from "~/components/file-uploader";
 import RadioButtonGroup from "~/components/radio-button-groups";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Skeleton } from "~/components/ui/skeleton";
 import {
   Form,
   FormControl,
@@ -80,13 +81,23 @@ export default function EventCreationForm() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error || !clubs) {
     return (
       <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
-        <ErrorWithLogin errorMsg={error?.message ?? "Failed to load clubs"} />
+        <EventCreationFormSkeleton />
+      </div>
+    );
+  }
+
+  if (error || !clubs?.length) {
+    return (
+      <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
+        <ErrorWithLogin
+          errorMsg={
+            !clubs?.length
+              ? "You are not the owner of any club. Only club owners can create events."
+              : (error?.message ?? "Failed to load clubs")
+          }
+        />
       </div>
     );
   }
@@ -253,5 +264,65 @@ export default function EventCreationForm() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function EventCreationFormSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-center text-2xl font-bold">
+          <Skeleton className="mx-auto h-8 w-3/4" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {/* Event Name */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+
+          {/* Image */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+
+          {/* Club */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Event Date */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Location */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Event Type */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Submit Button */}
+          <Skeleton className="h-10 w-full" />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
