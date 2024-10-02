@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "College Connect is a platform for college students to connect with each other and with their clubs and organizations.",
     start_url: "/home",
     display: "standalone",
-    background_color: "#000000",
-    theme_color: "#000000",
+    background_color: "#ffffff",
+    theme_color: "#ffffff",
     icons: [
       {
         src: "/android/android-launchericon-512-512.png",
