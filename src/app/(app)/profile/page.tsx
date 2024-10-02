@@ -1,17 +1,16 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { ErrorWithLogin } from "~/components/error-with-login";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { getYearOfStudy } from "~/lib/utils";
 import { api } from "~/trpc/react";
-import { signOut } from "next-auth/react";
-import { toast } from "sonner";
-import { Alert, AlertTitle } from "~/components/ui/alert";
 
 export default function Profile() {
   const { data, isLoading, error } = api.user.profile.useQuery();
@@ -21,13 +20,9 @@ export default function Profile() {
   }
 
   if (error || !data) {
-    toast.error(error?.message);
     return (
       <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          {error?.message ?? "Failed to load profile"}
-        </Alert>
+        <ErrorWithLogin errorMsg={error?.message ?? "Failed to load profile"} />
       </div>
     );
   }

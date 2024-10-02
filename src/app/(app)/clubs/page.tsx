@@ -1,7 +1,6 @@
 "use client";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { ClubCard, ClubCardSkeleton } from "~/components/club-card";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import { ErrorWithLogin } from "~/components/error-with-login";
 import { api } from "~/trpc/react";
 
 export default function Clubs() {
@@ -25,13 +24,7 @@ export default function Clubs() {
   if (error || !data) {
     return (
       <div>
-        <Alert variant="destructive">
-          <ExclamationTriangleIcon className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error?.message ?? "Something went wrong"}
-          </AlertDescription>
-        </Alert>
+        <ErrorWithLogin errorMsg={error?.message ?? "Something went wrong"} />
       </div>
     );
   }

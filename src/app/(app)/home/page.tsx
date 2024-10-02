@@ -1,7 +1,7 @@
 "use client";
 
+import { ErrorWithLogin } from "~/components/error-with-login";
 import { EventCard, EventCardSkeleton } from "~/components/event-card";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { api } from "~/trpc/react";
 
 export default function Home() {
@@ -21,12 +21,11 @@ export default function Home() {
     console.log({ error });
     return (
       <div className="mx-auto mt-8 w-11/12 space-y-4">
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error?.message ?? "Failed to load events. Please try again later."}
-          </AlertDescription>
-        </Alert>
+        <ErrorWithLogin
+          errorMsg={
+            error?.message ?? "Failed to load events. Please try again later."
+          }
+        />
       </div>
     );
   }

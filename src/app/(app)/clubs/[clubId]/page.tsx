@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { toast } from "sonner";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import { ErrorWithLogin } from "~/components/error-with-login";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
@@ -27,12 +27,7 @@ export default function ClubPage({ params }: { params: { clubId: string } }) {
   if (error || !data) {
     return (
       <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error?.message ?? "Something went wrong"}
-          </AlertDescription>
-        </Alert>
+        <ErrorWithLogin errorMsg={error?.message ?? "Something went wrong"} />
       </div>
     );
   }

@@ -28,6 +28,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { useUploadFile } from "~/hooks/use-upload-file";
 import { api } from "~/trpc/react";
 import { createEventSchema } from "~/validators/event";
+import { ErrorWithLogin } from "~/components/error-with-login";
 
 export default function EventCreationForm() {
   const createEvent = api.event.create.useMutation();
@@ -83,7 +84,11 @@ export default function EventCreationForm() {
   }
 
   if (error || !clubs) {
-    return <div>Error: {error?.message ?? "Failed to load clubs"}</div>;
+    return (
+      <div className="container mx-auto max-w-md space-y-4 px-4 py-8">
+        <ErrorWithLogin errorMsg={error?.message ?? "Failed to load clubs"} />
+      </div>
+    );
   }
 
   return (
