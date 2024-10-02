@@ -40,4 +40,12 @@ export const eventRouter = createTRPCRouter({
         });
       });
     }),
+  getEvents: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.events.findMany({
+      with: {
+        eventRegistrations: true,
+        club: true,
+      },
+    });
+  }),
 });

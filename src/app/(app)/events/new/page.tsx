@@ -240,7 +240,9 @@ export default function EventCreationForm() {
                 )}
               />
 
-              <Button type="submit">Create Event</Button>
+              <Button type="submit" loading={createEvent.isPending}>
+                Create Event
+              </Button>
             </form>
           </Form>
         </CardContent>
