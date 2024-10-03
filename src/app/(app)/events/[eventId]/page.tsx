@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { ErrorWithLogin } from "~/components/error-with-login";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
-import { getInitials } from "~/lib/utils";
+import { getInitials, getYearOfStudy } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { Skeleton } from "~/components/ui/skeleton";
 import Link from "next/link";
@@ -163,7 +163,7 @@ export default function EventPage({ params }: EventPageProps) {
         </div>
         <div>
           <h2 className="text-xl font-semibold">Participants</h2>
-          <div className="mt-3 flex items-center space-x-4">
+          <div className="mt-3 space-y-4">
             {data.eventRegistrations.map((registration) => {
               const member = registration.member;
               return (
@@ -182,6 +182,10 @@ export default function EventPage({ params }: EventPageProps) {
                   </Avatar>
                   <div>
                     <p className="font-medium leading-none">{member.name}</p>
+                    <p className="line-clamp-1 text-sm text-muted-foreground">
+                      {getYearOfStudy(member.yearOfStudy)} year |{" "}
+                      {member.degree} | {member.department}
+                    </p>
                   </div>
                 </div>
               );
