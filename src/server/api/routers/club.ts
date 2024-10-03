@@ -63,7 +63,7 @@ export const clubRouter = createTRPCRouter({
       .from(clubs)
       .leftJoin(events, eq(clubs.id, events.clubId))
       .leftJoin(clubToMembers, eq(clubs.id, clubToMembers.clubId))
-      .groupBy(clubs.id);
+      .groupBy(clubs.id, clubToMembers.memberId);
     return data;
   }),
   joinClub: protectedProcedure
