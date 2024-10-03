@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getInitials } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { Skeleton } from "~/components/ui/skeleton";
+import { EventCard } from "~/components/event-card";
 
 export default function ClubPage({ params }: { params: { clubId: string } }) {
   const {
@@ -118,7 +119,23 @@ export default function ClubPage({ params }: { params: { clubId: string } }) {
           <div>{data.description}</div>
         </TabsContent>
         <TabsContent value={ClubTabs.Events}>
-          <div>Events</div>
+          <div className="mt-4 space-y-4 pb-32">
+            {data.events.map((event) => {
+              return (
+                <EventCard
+                  key={event.id}
+                  date={event.eventDate}
+                  clubName={data.name}
+                  name={event.name}
+                  image={event.image ?? ""}
+                  description={event.description ?? ""}
+                  location={event.location ?? ""}
+                  registrationCount={event.eventRegistrations.length}
+                  id={event.id}
+                />
+              );
+            })}
+          </div>
         </TabsContent>
         <TabsContent value={ClubTabs.Members}>
           <div className="mt-4 space-y-4">

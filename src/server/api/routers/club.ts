@@ -122,7 +122,15 @@ export const clubRouter = createTRPCRouter({
               },
             },
           },
-          events: true,
+          events: {
+            with: {
+              eventRegistrations: {
+                columns: {
+                  memberId: true,
+                },
+              },
+            },
+          },
         },
       });
 
