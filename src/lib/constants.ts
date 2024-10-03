@@ -97,3 +97,5 @@ export enum ClubPosition {
   CREATOR = "Creator",
   HEAD = "Head",
 }
+
+export const TICKET_ID_SEPARATOR = "$$";

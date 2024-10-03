@@ -108,7 +108,7 @@ export default function Profile() {
                         alt={club.name}
                         width={80}
                         height={80}
-                        className="aspect-square rounded-md object-contain"
+                        className="aspect-square rounded-md object-cover"
                       />
                     </div>
                     <div className="flex-grow">
@@ -160,7 +160,7 @@ export default function Profile() {
                         alt={event.name}
                         width={80}
                         height={80}
-                        className="aspect-square rounded-md object-contain"
+                        className="aspect-square rounded-md object-cover"
                       />
                     </div>
                     <div className="flex-grow">
