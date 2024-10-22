@@ -24,6 +24,8 @@ import {
 import { DEGREES, DEPARTMENTS, YEAR_OF_STUDY } from "~/lib/constants";
 import { onboardingSchema } from "~/validators/onboarding";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type OnboardingFormProps = {
   user: User;
@@ -33,10 +35,16 @@ export function OnboardingForm({ user }: OnboardingFormProps) {
   const form = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
   });
+  const router = useRouter();
 
   const onboardingMutation = api.user.onboarding.useMutation({
     onSuccess: () => {
-      console.log("success");
+      router.replace("/profile");
+    },
+    onError(error) {
+      toast.error(error.message, {
+        richColors: true,
+      });
     },
   });
 

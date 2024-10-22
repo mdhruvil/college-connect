@@ -30,9 +30,20 @@ import { useUploadFile } from "~/hooks/use-upload-file";
 import { api } from "~/trpc/react";
 import { createEventSchema } from "~/validators/event";
 import { ErrorWithLogin } from "~/components/error-with-login";
+import { useRouter } from "next/navigation";
 
 export default function EventCreationForm() {
-  const createEvent = api.event.create.useMutation();
+  const router = useRouter();
+  const createEvent = api.event.create.useMutation({
+    onSuccess: () => {
+      router.replace("/events");
+    },
+    onError(error) {
+      toast.error(error.message, {
+        richColors: true,
+      });
+    },
+  });
   const {
     data: clubs,
     isLoading,

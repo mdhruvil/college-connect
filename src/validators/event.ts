@@ -2,7 +2,9 @@ import { z } from "zod";
 
 export const createEventSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  description: z.string(),
+  description: z
+    .string()
+    .max(255, "Description must be less than 255 characters"),
   image: z
     .array(
       z

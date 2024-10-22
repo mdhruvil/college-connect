@@ -21,9 +21,20 @@ import { Textarea } from "~/components/ui/textarea";
 import { useUploadFile } from "~/hooks/use-upload-file";
 import { createClubSchema } from "~/validators/club";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 export default function CreateClubPage() {
-  const createClub = api.club.create.useMutation();
+  const router = useRouter();
+  const createClub = api.club.create.useMutation({
+    onSuccess: () => {
+      router.replace("/clubs");
+    },
+    onError(error) {
+      toast.error(error.message, {
+        richColors: true,
+      });
+    },
+  });
 
   const { onUpload, progresses, isUploading } = useUploadFile("imageUploader", {
     defaultUploadedFiles: [],
