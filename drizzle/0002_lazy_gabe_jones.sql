@@ -1,0 +1,1 @@
+ALTER TABLE "college-connect_event" ADD COLUMN "short_code" integer DEFAULT 0 NOT NULL;

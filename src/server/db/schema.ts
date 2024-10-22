@@ -10,6 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { generateSixDigitUniqueNumber } from "~/lib/utils";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -139,6 +140,10 @@ export const events = createTable("event", {
   eventDate: timestamp("event_date", { withTimezone: true }).notNull(),
   location: varchar("location", { length: 255 }),
   type: varchar("type", { length: 255, enum: ["ONLINE", "OFFLINE"] }),
+  shortCode: integer("short_code")
+    .notNull()
+    .$defaultFn(() => generateSixDigitUniqueNumber())
+    .default(0),
 });
 
 export const eventsRelations = relations(events, ({ one, many }) => ({

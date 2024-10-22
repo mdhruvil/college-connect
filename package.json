@@ -10,6 +10,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
+    "dev:https": "next dev --experimental-https",
     "lint": "next lint",
     "start": "next start",
     "pretty": "prettier --write ."
@@ -33,6 +34,7 @@
     "@trpc/react-query": "^11.0.0-rc.446",
     "@trpc/server": "^11.0.0-rc.446",
     "@uploadthing/react": "^6.8.0",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

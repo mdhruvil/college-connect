@@ -47,4 +47,35 @@ export const ticketRouter = createTRPCRouter({
       const qrSvg = renderSVG(input.ticketId);
       return { ...ticket, qrSvg };
     }),
+
+  checkTicketValidity: protectedProcedure
+    .input(
+      z.object({
+        ticketId: z.string(),
+        eventCode: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const ticketId = decodeURIComponent(input.ticketId);
+      const [eventId, memberId] = ticketId.split(TICKET_ID_SEPARATOR);
+      if (!eventId || !memberId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid ticket ID",
+        });
+      }
+      const ticket = await ctx.db.query.eventRegistrations.findFirst({
+        where: and(
+          eq(eventRegistrations.eventId, eventId),
+          eq(eventRegistrations.memberId, memberId),
+        ),
+        with: {
+          event: true,
+        },
+      });
+      if (!ticket) {
+        return false;
+      }
+      return ticket.event.shortCode === input.eventCode;
+    }),
 });

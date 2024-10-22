@@ -1,0 +1,1 @@
+ALTER TABLE "college-connect_event" DROP COLUMN IF EXISTS "short_code";

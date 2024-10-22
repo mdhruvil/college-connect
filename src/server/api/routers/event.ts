@@ -78,6 +78,7 @@ export const eventRouter = createTRPCRouter({
         isRegistered: event.eventRegistrations.some(
           (registration) => registration.memberId === userId,
         ),
+        isCreator: event.createdById === userId,
       };
     }),
 

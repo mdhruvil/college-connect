@@ -34,3 +34,11 @@ export function getInitials(name: string) {
   const [firstName, lastName] = name.split(" ");
   return `${firstName?.charAt(0)}${lastName?.charAt(0)}`;
 }
+
+export function generateSixDigitUniqueNumber() {
+  const now = Date.now();
+  const timestamp = now % 1000000; // Get last 6 digits of timestamp
+  const randomPart = (now % 1000) * 1000 + (performance.now() % 1000);
+  const combined = (timestamp + randomPart) % 1000000;
+  return parseInt(combined.toString().padStart(6, "0"));
+}

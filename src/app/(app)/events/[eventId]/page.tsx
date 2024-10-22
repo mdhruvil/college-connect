@@ -81,6 +81,9 @@ export default function EventPage({ params }: EventPageProps) {
       <div className="container mx-auto mt-4 max-w-md space-y-4 !bg-white px-4">
         <div>
           <h1 className="text-2xl font-semibold">{data.name}</h1>
+          {data.isCreator && (
+            <p className="text-sm">Event Code: {data.shortCode}</p>
+          )}
           <p className="text-sm text-muted-foreground">{data.description}</p>
         </div>
         <div className="flex items-center gap-1">
