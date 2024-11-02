@@ -50,17 +50,11 @@ This project uses the [T3 Stack](https://create.t3.gg/) with the following techn
 
 ## Screenshots
 
-<div align="center">
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-    <img src="screenshots/home.jpg" alt="Home" width="100%"/>
-    <img src="screenshots/profile.jpg" alt="Profile" width="100%"/>
-    <img src="screenshots/clubs.jpg" alt="Clubs" width="100%"/>
-    <img src="screenshots/club.jpg" alt="Club" width="100%"/>
-    <img src="screenshots/club-events.jpg" alt="Club Event" width="100%"/>
-    <img src="screenshots/club-members.jpg" alt="Club members" width="100%"/>
-    <img src="screenshots/event-details.jpg" alt="Event Details" width="100%"/>
-  </div>
-</div>
+|                                                                             |                                                                        |                                                                           |
+| :-------------------------------------------------------------------------: | :--------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+|          <img src="screenshots/home.jpg" alt="Home" width="100%"/>          |    <img src="screenshots/profile.jpg" alt="Profile" width="100%"/>     |        <img src="screenshots/clubs.jpg" alt="Clubs" width="100%"/>        |
+|          <img src="screenshots/club.jpg" alt="Club" width="100%"/>          | <img src="screenshots/club-events.jpg" alt="Club Event" width="100%"/> | <img src="screenshots/club-members.jpg" alt="Club members" width="100%"/> |
+| <img src="screenshots/event-details.jpg" alt="Event Details" width="100%"/> |                                                                        |                                                                           |
 
 ## Getting Started
 
