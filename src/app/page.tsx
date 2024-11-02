@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Apple, Smartphone } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -10,9 +11,11 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function InstallPage() {
+  const router = useRouter();
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
@@ -26,11 +29,17 @@ export default function InstallPage() {
       handleBeforeInstallPrompt as EventListener,
     );
 
+    // Wait 5 seconds before showing the redirect button
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt as EventListener,
       );
+      clearTimeout(timer);
     };
   }, []);
 
@@ -41,6 +50,7 @@ export default function InstallPage() {
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
       setIsInstallable(false);
+      router.push("/home");
     }
     setDeferredPrompt(null);
   };
@@ -50,10 +60,20 @@ export default function InstallPage() {
       <h1 className="mb-4 text-2xl font-bold">Install Our App</h1>
       <p className="mb-6">Install our app for a better experience.</p>
 
-      {isInstallable && (
+      {isInstallable ? (
         <Button onClick={handleInstallClick} className="mb-4 w-full" size="lg">
           Install App
         </Button>
+      ) : (
+        !isLoading && (
+          <Button
+            onClick={() => router.push("/home")}
+            className="mb-4 w-full"
+            size="lg"
+          >
+            Continue to App
+          </Button>
+        )
       )}
 
       <div className="mt-8">
