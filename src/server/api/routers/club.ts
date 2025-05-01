@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { and, eq, sql } from "drizzle-orm";
+import { and, countDistinct, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { ClubPosition } from "~/lib/constants";
 import { clubs, clubToMembers, events } from "~/server/db/schema";
@@ -49,10 +49,8 @@ export const clubRouter = createTRPCRouter({
         image: clubs.image,
         createdById: clubs.createdById,
         createdAt: clubs.createdAt,
-        memberCount: sql<number>`count(${clubToMembers.memberId})`.as(
-          "memberCount",
-        ),
-        eventCount: sql<number>`count(${events.id})`.as("eventCount"),
+        memberCount: countDistinct(clubToMembers.memberId).as("memberCount"),
+        eventCount: countDistinct(events.id).as("eventCount"),
         isMember: sql<boolean>`
         EXISTS (
           SELECT 1 FROM ${clubToMembers} 
@@ -63,7 +61,7 @@ export const clubRouter = createTRPCRouter({
       .from(clubs)
       .leftJoin(events, eq(clubs.id, events.clubId))
       .leftJoin(clubToMembers, eq(clubs.id, clubToMembers.clubId))
-      .groupBy(clubs.id, clubToMembers.memberId);
+      .groupBy(clubs.id); // Group only by club ID
     return data;
   }),
   joinClub: protectedProcedure
